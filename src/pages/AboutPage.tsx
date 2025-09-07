@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Download, BookOpen, Target, Zap } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { useAboutPageData } from '../hooks/useAboutData';
+import { getAboutImageUrl } from '../types';
 
 export const AboutPage: React.FC = () => {
+  const { aboutData, loading } = useAboutPageData();
+  
   const skills = [
     'User Interviews',
     'Usability Testing',
@@ -44,39 +49,64 @@ export const AboutPage: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full mx-auto mb-8 flex items-center justify-center text-white text-4xl font-bold">
-            UX
+          <div className="mb-8">
+            {aboutData ? (
+              <img 
+                src={getAboutImageUrl(aboutData) || "/profile-photo.jpg"}
+                alt="Clark - UX Researcher"
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto object-cover shadow-lg"
+              />
+            ) : (
+              <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full mx-auto mb-8 flex items-center justify-center text-white text-4xl font-bold">
+                UX
+              </div>
+            )}
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             About Clark
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            I'm Clark Shetter, a UX researcher and research operations specialist passionate about 
-            uncovering user insights and building the systems that enable research to scale effectively.
-          </p>
         </div>
 
-        {/* Story */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">My Story</h2>
-          <div className="prose-custom">
-            <p>
-              As a UX researcher with experience in both conducting research and improving research operations, 
-              I've helped teams make more informed, user-centered decisions. My background spans qualitative 
-              and quantitative research methods, always with a focus on translating insights into actionable outcomes.
-            </p>
-            <p>
-              I'm passionate about both sides of the research equation: diving deep into user behavior 
-              through interviews, usability testing, and data analysis, while also working to streamline 
-              research processes and make insights more accessible to cross-functional teams.
-            </p>
-            <p>
-              My approach combines curiosity-driven research with systematic thinking. Whether I'm 
-              uncovering user pain points or building better research workflows, I focus on creating 
-              clarity from complexity and ensuring that user voices are heard throughout the product development process.
-            </p>
-          </div>
-        </section>
+        {/* Dynamic Content from Airtable */}
+        {loading.isLoading ? (
+          <section className="mb-16">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-gray-300 dark:bg-gray-600 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+            </div>
+          </section>
+        ) : loading.error ? (
+          <section className="mb-16 text-center">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-8">
+              <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error Loading Content</h2>
+              <p className="text-red-600 dark:text-red-400 mb-6">{loading.error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="btn-primary"
+              >
+                Retry
+              </button>
+            </div>
+          </section>
+        ) : aboutData?.fields.description ? (
+          <section className="mb-16">
+            <div className="prose prose-lg dark:prose-invert max-w-none">
+              <ReactMarkdown>{aboutData.fields.description}</ReactMarkdown>
+            </div>
+          </section>
+        ) : (
+          <section className="mb-16 text-center">
+            <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-4">Content Not Available</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">About page content is not currently available.</p>
+              <Link to="/" className="btn-primary">
+                Return to Home
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* Approach */}
         <section className="mb-16">
@@ -161,7 +191,7 @@ export const AboutPage: React.FC = () => {
         </div>
 
         {/* Experience */}
-        <section className="mb-16">
+        {/* <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Experience</h2>
           <div className="space-y-8">
             <div className="border-l-4 border-blue-500 pl-6">
@@ -203,10 +233,10 @@ export const AboutPage: React.FC = () => {
               </ul>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Education */}
-        <section className="mb-16">
+        {/* <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Education</h2>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -217,7 +247,7 @@ export const AboutPage: React.FC = () => {
               Specialized in user research methodologies, information architecture, and interaction design.
             </p>
           </div>
-        </section>
+        </section> */}
 
         {/* CTA */}
         <section className="text-center bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-xl p-12">

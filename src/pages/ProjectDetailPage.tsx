@@ -4,7 +4,7 @@ import { ArrowLeft, ExternalLink, Calendar, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useProject } from '../hooks/useProjects';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { getCategoryFromProject, getProjectImageUrl } from '../types';
+import { getProjectImageUrl } from '../types';
 
 export const ProjectDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -39,7 +39,6 @@ export const ProjectDetailPage: React.FC = () => {
     );
   }
 
-  const category = getCategoryFromProject(project);
   const imageUrl = getProjectImageUrl(project);
   const formattedDate = project.createdTime 
     ? new Date(project.createdTime).toLocaleDateString('en-US', { 
@@ -75,14 +74,8 @@ export const ProjectDetailPage: React.FC = () => {
         {/* Project Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
-            <span 
-              className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                category === 'UX Research' 
-                  ? 'badge-research' 
-                  : 'badge-ops'
-              }`}
-            >
-              {category}
+            <span className="inline-flex px-3 py-1 rounded-full text-sm font-medium badge-research">
+              Case Study
             </span>
             {formattedDate && (
               <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">

@@ -9,7 +9,8 @@ export const Navigation: React.FC = () => {
 
   const navItems = [
     { path: '/', label: 'Home' },
-    { path: '/projects', label: 'Projects' },
+    { path: '/projects', label: 'Case Studies' },
+    { path: '/research-ops', label: 'Research Ops' },
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
   ];

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Calendar } from 'lucide-react';
-import { type PortfolioProject, getCategoryFromProject, getProjectThumbnailUrl } from '../types';
+import { type PortfolioProject, getProjectThumbnailUrl } from '../types';
 
 interface ProjectCardProps {
   project: PortfolioProject;
@@ -12,7 +12,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   project, 
   showCategory = true 
 }) => {
-  const category = getCategoryFromProject(project);
   const imageUrl = getProjectThumbnailUrl(project);
   const formattedDate = project.createdTime 
     ? new Date(project.createdTime).toLocaleDateString('en-US', { 
@@ -64,24 +63,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
       {/* Content */}
       <div className="p-7">
-        {/* Category Badge */}
-        {showCategory && (
-          <div className="flex items-center justify-between mb-4">
-            <span 
-              className={`inline-flex transition-all duration-200 group-hover:scale-105 ${
-                category === 'UX Research' 
-                  ? 'badge-research' 
-                  : 'badge-ops'
-              }`}
-            >
-              {category}
-            </span>
-            {formattedDate && (
-              <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 font-medium">
-                <Calendar size={12} className="mr-1.5" />
-                {formattedDate}
-              </div>
-            )}
+        {/* Date Badge */}
+        {showCategory && formattedDate && (
+          <div className="flex items-center justify-end mb-4">
+            <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 font-medium">
+              <Calendar size={12} className="mr-1.5" />
+              {formattedDate}
+            </div>
           </div>
         )}
 

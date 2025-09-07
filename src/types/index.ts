@@ -30,10 +30,7 @@ export interface PortfolioProject {
   createdTime: string;
 }
 
-export type ProjectCategory = 'UX Research' | 'UX Research Operations' | 'All';
-
 export interface ProjectFilters {
-  category: ProjectCategory;
   tags: string[];
   search: string;
 }
@@ -48,19 +45,12 @@ export interface LoadingState {
   error: string | null;
 }
 
-// Helper function to determine category if using tags approach
-export const getProjectCategory = (tags: string[]): ProjectCategory => {
-  if (tags.includes('UX Research Operations')) return 'UX Research Operations';
-  if (tags.includes('UX Research')) return 'UX Research';
-  return 'UX Research'; // default fallback
-};
-
-// Helper function to get category from project
-export const getCategoryFromProject = (project: PortfolioProject): ProjectCategory => {
+// Helper function to check if project is a UX Research project
+export const isUXResearchProject = (project: PortfolioProject): boolean => {
   if (project.fields.category) {
-    return project.fields.category;
+    return project.fields.category === 'UX Research';
   }
-  return getProjectCategory(project.fields.tags);
+  return project.fields.tags.includes('UX Research') && !project.fields.tags.includes('UX Research Operations');
 };
 
 // Helper function to check if project is featured
@@ -83,4 +73,42 @@ export const getProjectThumbnailUrl = (project: PortfolioProject): string | null
     return image.thumbnails?.large?.url || image.url;
   }
   return null;
+};
+
+// New About interface for dynamic content
+export interface AboutData {
+  id: string;
+  fields: {
+    description: string; // markdown content
+    page: string; // "hero" | "about"
+    image?: AirtableAttachment[]; // hero/profile image
+  };
+  createdTime: string;
+}
+
+// New Research Ops interface
+export interface ResearchOpsData {
+  id: string;
+  fields: {
+    name: string; // portfolio title
+    pdf?: AirtableAttachment[]; // PDF file(s) for carousel
+    url?: string; // external portfolio link
+  };
+  createdTime: string;
+}
+
+// Helper function to get image URL from About data
+export const getAboutImageUrl = (aboutData: AboutData): string | null => {
+  if (aboutData.fields.image && aboutData.fields.image.length > 0) {
+    return aboutData.fields.image[0].url;
+  }
+  return null;
+};
+
+// Helper function to get Research Ops PDF URLs
+export const getResearchOpsPDFUrls = (researchOpsData: ResearchOpsData): string[] => {
+  if (researchOpsData.fields.pdf && researchOpsData.fields.pdf.length > 0) {
+    return researchOpsData.fields.pdf.map(pdf => pdf.url);
+  }
+  return [];
 };

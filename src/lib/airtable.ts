@@ -1,5 +1,5 @@
 import Airtable from 'airtable';
-import { type PortfolioProject } from '../types';
+import { type PortfolioProject, type AboutData, type ResearchOpsData } from '../types';
 
 // Initialize Airtable
 const AIRTABLE_PAT = import.meta.env.VITE_AIRTABLE_PAT;
@@ -17,7 +17,7 @@ const base = new Airtable({
 
 export class AirtableService {
   private static instance: AirtableService;
-  private cache: Map<string, { data: PortfolioProject[]; timestamp: number }> = new Map();
+  private cache: Map<string, { data: any; timestamp: number }> = new Map();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   public static getInstance(): AirtableService {
@@ -41,9 +41,8 @@ export class AirtableService {
 
     try {
       if (!AIRTABLE_PAT || !AIRTABLE_BASE_ID) {
-        console.log('Missing Airtable credentials, using mock data');
-        // Return mock data for development
-        return this.getMockProjects();
+        console.log('Missing Airtable credentials');
+        return [];
       }
 
       console.log('Fetching from Airtable with Base ID:', AIRTABLE_BASE_ID?.substring(0, 8) + '...');
@@ -51,7 +50,7 @@ export class AirtableService {
       const records = await base('Case Studies').select({
         view: 'Grid view',
         sort: [
-          { field: 'featured_id', direction: 'desc' }
+          { field: 'featured_id', direction: 'asc' }
         ]
       }).all();
 
@@ -78,12 +77,12 @@ export class AirtableService {
     } catch (error) {
       console.error('Error fetching projects from Airtable:', error);
       
-      // Return cached data if available, otherwise return mock data
+      // Return cached data if available, otherwise return empty array
       if (cached) {
         return cached.data;
       }
       
-      return this.getMockProjects();
+      return [];
     }
   }
 
@@ -100,71 +99,148 @@ export class AirtableService {
   async fetchFeaturedProjects(): Promise<PortfolioProject[]> {
     try {
       const projects = await this.fetchProjects();
-      return projects.filter(project => Boolean(project.fields.featured_id));
+      return projects
+        .filter(project => Boolean(project.fields.featured_id))
+        .sort((a, b) => (a.fields.featured_id || 0) - (b.fields.featured_id || 0))
+        .slice(0, 3);
     } catch (error) {
       console.error('Error fetching featured projects:', error);
       return [];
     }
   }
 
-  async fetchProjectsByCategory(category: 'UX Research' | 'UX Research Operations'): Promise<PortfolioProject[]> {
+  async fetchUXResearchProjects(): Promise<PortfolioProject[]> {
     try {
       const projects = await this.fetchProjects();
       return projects.filter(project => {
         if (project.fields.category) {
-          return project.fields.category === category;
+          return project.fields.category === 'UX Research';
         }
-        return project.fields.tags.includes(category);
+        return project.fields.tags.includes('UX Research') && !project.fields.tags.includes('UX Research Operations');
       });
     } catch (error) {
-      console.error('Error fetching projects by category:', error);
+      console.error('Error fetching UX Research projects:', error);
       return [];
     }
   }
 
-  private getMockProjects(): PortfolioProject[] {
-    return [
-      {
-        id: '1',
-        fields: {
-          title: 'Banking App User Research',
-          slug: 'banking-app-user-research',
-          content: '# Banking App User Research\n\nThis project involved comprehensive user research for a mobile banking application, including user interviews, usability testing, and behavioral analysis.\n\n## Key Findings\n\n- Users prioritize security and trust indicators\n- Simple navigation is crucial for daily banking tasks\n- Mobile-first approach needed for younger demographics\n\n## Methodology\n\n- 15 user interviews\n- 3 rounds of usability testing\n- Quantitative survey with 200+ responses',
-          tags: ['UX Research', 'User Interviews', 'Usability Testing', 'Mobile'],
-          category: 'UX Research',
-          featured_id: 1,
-          description: 'Comprehensive user research study for a mobile banking application focusing on user behavior and trust factors.',
-          url: 'https://example.com/banking-research',
-        },
-        createdTime: '2024-01-15T10:00:00.000Z',
-      },
-      {
-        id: '2',
-        fields: {
-          title: 'Research Operations Framework',
-          slug: 'research-ops-framework',
-          content: '# Research Operations Framework\n\nDeveloped a comprehensive research operations framework to scale user research across multiple product teams.\n\n## Framework Components\n\n- Research repository and knowledge management\n- Standardized research processes and templates\n- Participant recruitment and management system\n- Research tools evaluation and implementation\n\n## Impact\n\n- 40% reduction in research setup time\n- Improved research quality and consistency\n- Better cross-team collaboration',
-          tags: ['UX Research Operations', 'Process Design', 'Tool Implementation', 'Knowledge Management'],
-          category: 'UX Research Operations',
-          featured_id: 2,
-          description: 'Framework for scaling user research operations across multiple product teams with improved efficiency.',
-        },
-        createdTime: '2024-02-01T10:00:00.000Z',
-      },
-      {
-        id: '3',
-        fields: {
-          title: 'E-commerce Checkout Optimization',
-          slug: 'ecommerce-checkout-optimization',
-          content: '# E-commerce Checkout Optimization\n\nA/B testing and user research study to optimize the checkout flow for an e-commerce platform.\n\n## Research Methods\n\n- Comparative usability testing\n- Analytics analysis\n- Post-purchase surveys\n- Heat map analysis\n\n## Results\n\n- 23% increase in conversion rate\n- 15% reduction in cart abandonment\n- Improved user satisfaction scores',
-          tags: ['UX Research', 'A/B Testing', 'Conversion Optimization', 'E-commerce'],
-          category: 'UX Research',
-          description: 'Optimization study for e-commerce checkout flow resulting in significant conversion improvements.',
-        },
-        createdTime: '2024-03-10T10:00:00.000Z',
-      }
-    ];
+  // Deprecated: Research Operations projects are now handled separately via Research Ops table
+  async fetchProjectsByCategory(category: 'UX Research' | 'UX Research Operations'): Promise<PortfolioProject[]> {
+    console.warn('fetchProjectsByCategory is deprecated. Use fetchUXResearchProjects() instead.');
+    if (category === 'UX Research') {
+      return this.fetchUXResearchProjects();
+    }
+    // Return empty array for Research Operations as they're now in separate table
+    return [];
   }
+
+  // New method to fetch About data by page
+  async fetchAboutDataByPage(page: string): Promise<AboutData | null> {
+    const cacheKey = `about_${page}`;
+    const cached = this.cache.get(cacheKey);
+
+    if (cached && this.isCacheValid(cached.timestamp)) {
+      return cached.data;
+    }
+
+    try {
+      if (!AIRTABLE_PAT || !AIRTABLE_BASE_ID) {
+        console.log('Missing Airtable credentials for About data');
+        return null;
+      }
+
+      console.log('Fetching About data for page:', page);
+      
+      const records = await base('About').select({
+        filterByFormula: `{page} = '${page}'`,
+        view: 'Grid view'
+      }).all();
+
+      if (records.length === 0) {
+        console.log(`No About data found for page: ${page}`);
+        return null;
+      }
+
+      const record = records[0];
+      const aboutData: AboutData = {
+        id: record.id,
+        fields: {
+          description: record.fields.description as string || '',
+          page: record.fields.page as string || page,
+          image: record.fields.image as any,
+        },
+        createdTime: record._rawJson.createdTime || new Date().toISOString(),
+      };
+
+      // Cache the results
+      this.cache.set(cacheKey, { data: aboutData, timestamp: Date.now() });
+
+      return aboutData;
+    } catch (error) {
+      console.error('Error fetching About data from Airtable:', error);
+      
+      // Return cached data if available, otherwise return null
+      if (cached) {
+        return cached.data;
+      }
+      
+      return null;
+    }
+  }
+
+  // New method to fetch Research Ops data
+  async fetchResearchOpsData(): Promise<ResearchOpsData | null> {
+    const cacheKey = 'research_ops';
+    const cached = this.cache.get(cacheKey);
+
+    if (cached && this.isCacheValid(cached.timestamp)) {
+      return cached.data;
+    }
+
+    try {
+      if (!AIRTABLE_PAT || !AIRTABLE_BASE_ID) {
+        console.log('Missing Airtable credentials for Research Ops data');
+        return null;
+      }
+
+      console.log('Fetching Research Ops data');
+      
+      const records = await base('Research Ops').select({
+        view: 'Grid view'
+      }).all();
+
+      if (records.length === 0) {
+        console.log('No Research Ops data found');
+        return null;
+      }
+
+      const record = records[0]; // Taking first record as it's expected to be a single row
+      const researchOpsData: ResearchOpsData = {
+        id: record.id,
+        fields: {
+          name: record.fields.name as string || '',
+          pdf: record.fields.pdf as any,
+          url: record.fields.url as string,
+        },
+        createdTime: record._rawJson.createdTime || new Date().toISOString(),
+      };
+
+      // Cache the results
+      this.cache.set(cacheKey, { data: researchOpsData, timestamp: Date.now() });
+
+      return researchOpsData;
+    } catch (error) {
+      console.error('Error I from Airtable:', error);
+      
+      // Return cached data if available, otherwise return null
+      if (cached) {
+        return cached.data;
+      }
+      
+      return null;
+    }
+  }
+
 
   clearCache(): void {
     this.cache.clear();

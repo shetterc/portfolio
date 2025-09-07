@@ -2,20 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Settings } from 'lucide-react';
 import { useFeaturedProjects } from '../hooks/useProjects';
+import { useHeroData } from '../hooks/useAboutData';
 import { ProjectCard } from '../components/ProjectCard';
 import { LoadingSkeleton } from '../components/LoadingSpinner';
-import { getCategoryFromProject } from '../types';
+import { isUXResearchProject, getAboutImageUrl } from '../types';
 
 export const HomePage: React.FC = () => {
   const { projects: featuredProjects, loading } = useFeaturedProjects();
+  const { aboutData: heroData, loading: heroLoading } = useHeroData();
 
-  const researchProjects = featuredProjects.filter(
-    project => getCategoryFromProject(project) === 'UX Research'
-  );
-  
-  const opsProjects = featuredProjects.filter(
-    project => getCategoryFromProject(project) === 'UX Research Operations'
-  );
+  const researchProjects = featuredProjects.filter(isUXResearchProject);
 
   return (
     <div className="min-h-screen">
@@ -25,7 +21,7 @@ export const HomePage: React.FC = () => {
           {/* Profile Photo */}
           <div className="mb-8">
             <img 
-              src="/profile-photo.jpg" 
+              src={heroData ? getAboutImageUrl(heroData) || "/profile-photo.jpg" : "/profile-photo.jpg"}
               alt="Clark - UX Researcher"
               className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto object-cover shadow-lg"
             />
@@ -40,7 +36,13 @@ export const HomePage: React.FC = () => {
           </p>
           
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">
-            I help organizations make better user-centered decisions through strategic research and scalable operations.
+            {heroLoading.isLoading ? (
+              <span className="animate-pulse bg-gray-300 dark:bg-gray-600 h-6 rounded block"></span>
+            ) : heroData?.fields.description ? (
+              heroData.fields.description
+            ) : (
+              "I help organizations make better user-centered decisions through strategic research and scalable operations."
+            )}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -48,7 +50,7 @@ export const HomePage: React.FC = () => {
               to="/projects"
               className="btn-primary inline-flex items-center justify-center group px-6 py-3"
             >
-              View Projects
+              View Case Studies
               <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
             <Link
@@ -71,11 +73,11 @@ export const HomePage: React.FC = () => {
               </span>
             </div>
             <h2 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
-              Featured <span className="text-research-600 dark:text-research-400">Work</span>
+              Featured <span className="text-research-600 dark:text-research-400">Case Studies</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Selected projects that demonstrate impact across diverse problem spaces,
-              <span className="block mt-2 opacity-90">from user insights to operational improvements.</span>
+              Selected research projects that demonstrate impact across diverse problem spaces,
+              <span className="block mt-2 opacity-90">from user insights to actionable recommendations.</span>
             </p>
           </div>
 
@@ -103,7 +105,7 @@ export const HomePage: React.FC = () => {
                 No featured projects found.
               </p>
               <Link to="/projects" className="btn-primary">
-                View All Projects
+                View All Case Studies
               </Link>
             </div>
           ) : (
@@ -167,10 +169,10 @@ export const HomePage: React.FC = () => {
                 )}
                 
                 <Link
-                  to="/projects?category=UX Research"
+                  to="/projects"
                   className="inline-flex items-center text-research-600 dark:text-research-400 hover:text-research-700 dark:hover:text-research-300 font-bold group transition-all duration-200"
                 >
-                  View All Research Projects
+                  View All Case Studies
                   <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
                 </Link>
               </div>
@@ -197,28 +199,31 @@ export const HomePage: React.FC = () => {
                   that enable teams to make user-centered decisions.
                 </p>
                 
-                {opsProjects.length > 0 && (
-                  <div className="space-y-3 mb-8">
-                    <p className="text-sm font-bold text-ops-700 dark:text-ops-300 uppercase tracking-wide">
-                      Featured Projects:
+                <div className="space-y-3 mb-8">
+                  <p className="text-sm font-bold text-ops-700 dark:text-ops-300 uppercase tracking-wide">
+                    Portfolio Highlights:
+                  </p>
+                  <div className="space-y-2 text-gray-600 dark:text-gray-400">
+                    <p className="flex items-center justify-center">
+                      <span className="w-2 h-2 bg-ops-600 dark:bg-ops-400 rounded-full mr-3"></span>
+                      Process Design & Documentation
                     </p>
-                    {opsProjects.slice(0, 3).map(project => (
-                      <Link
-                        key={project.id}
-                        to={`/projects/${project.fields.slug}`}
-                        className="block text-ops-600 dark:text-ops-400 hover:text-ops-700 dark:hover:text-ops-300 font-medium transition-colors duration-200 hover:translate-x-2"
-                      >
-                        → {project.fields.title}
-                      </Link>
-                    ))}
+                    <p className="flex items-center justify-center">
+                      <span className="w-2 h-2 bg-ops-600 dark:bg-ops-400 rounded-full mr-3"></span>
+                      Research Tool Implementation
+                    </p>
+                    <p className="flex items-center justify-center">
+                      <span className="w-2 h-2 bg-ops-600 dark:bg-ops-400 rounded-full mr-3"></span>
+                      Knowledge Management Systems
+                    </p>
                   </div>
-                )}
+                </div>
                 
                 <Link
-                  to="/projects?category=UX Research Operations"
+                  to="/research-ops"
                   className="inline-flex items-center text-ops-600 dark:text-ops-400 hover:text-ops-700 dark:hover:text-ops-300 font-bold group transition-all duration-200"
                 >
-                  View All Operations Projects
+                  View Research Operations Portfolio
                   <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
                 </Link>
               </div>

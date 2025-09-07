@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { type PortfolioProject, type ProjectCategory, type LoadingState } from '../types';
+import { type PortfolioProject, type LoadingState } from '../types';
 import { airtableService } from '../lib/airtable';
 
 export const useProjects = () => {
@@ -85,35 +85,5 @@ export const useFeaturedProjects = () => {
   return { projects, loading };
 };
 
-export const useProjectsByCategory = (category: ProjectCategory) => {
-  const [projects, setProjects] = useState<PortfolioProject[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ isLoading: true, error: null });
-
-  useEffect(() => {
-    const fetchProjectsByCategory = async () => {
-      try {
-        setLoading({ isLoading: true, error: null });
-        
-        if (category === 'All') {
-          const data = await airtableService.fetchProjects();
-          setProjects(data);
-        } else {
-          const data = await airtableService.fetchProjectsByCategory(category);
-          setProjects(data);
-        }
-        
-        setLoading({ isLoading: false, error: null });
-      } catch (error) {
-        console.error('Error fetching projects by category:', error);
-        setLoading({ 
-          isLoading: false, 
-          error: error instanceof Error ? error.message : 'Failed to fetch projects' 
-        });
-      }
-    };
-
-    fetchProjectsByCategory();
-  }, [category]);
-
-  return { projects, loading };
-};
+// Deprecated: Categories are no longer used
+// export const useProjectsByCategory = (category: ProjectCategory) => { ... }
