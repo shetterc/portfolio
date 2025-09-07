@@ -13,7 +13,7 @@ import { NotFoundPage } from './pages/NotFoundPage';
 function App() {
   return (
     <ThemeProvider>
-      <Router>
+      <Router basename="/portfolio">
         <ScrollToTopOnRouteChange />
         <Layout>
           <Routes>
