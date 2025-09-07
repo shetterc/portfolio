@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Configure dark mode to use class strategy */
+@variant dark (.dark &);
+
+@theme {
+  --font-sans: Inter, system-ui, sans-serif;
+  
+  --color-research-50: #eff6ff;
+  --color-research-100: #dbeafe;
+  --color-research-200: #bfdbfe;
+  --color-research-300: #93c5fd;
+  --color-research-400: #60a5fa;
+  --color-research-500: #3b82f6;
+  --color-research-600: #2563eb;
+  --color-research-700: #1d4ed8;
+  --color-research-800: #1e40af;
+  --color-research-900: #1e3a8a;
+  
+  --color-ops-50: #f0fdfa;
+  --color-ops-100: #ccfbf1;
+  --color-ops-200: #99f6e4;
+  --color-ops-300: #5eead4;
+  --color-ops-400: #2dd4bf;
+  --color-ops-500: #14b8a6;
+  --color-ops-600: #0d9488;
+  --color-ops-700: #0f766e;
+  --color-ops-800: #115e59;
+  --color-ops-900: #134e4a;
+  
+  --color-accent-50: #fdf4ff;
+  --color-accent-100: #fae8ff;
+  --color-accent-500: #a855f7;
+  --color-accent-600: #9333ea;
+  --color-accent-700: #7c3aed;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-sans antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 m-0 min-w-80 min-h-screen;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-research-600 to-research-700 hover:from-research-700 hover:to-research-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-research-500 focus:ring-offset-2 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98];
+}
+
+.btn-secondary {
+  @apply bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 px-6 py-3 rounded-xl font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-600 hover:scale-[1.02] active:scale-[0.98];
+}
+
+/* Enhanced card with depth and subtle patterns */
+.card {
+  @apply bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl hover:border-research-200 dark:hover:border-research-700 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1;
+  background-image: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.02), transparent),
+                    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.02), transparent),
+                    radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.02), transparent);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Enhanced badges with gradients and better typography */
+.badge-research {
+  @apply bg-gradient-to-r from-research-100 to-research-200 text-research-800 dark:from-research-900 dark:to-research-800 dark:text-research-200 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm border border-research-200 dark:border-research-700;
+}
+
+.badge-ops {
+  @apply bg-gradient-to-r from-ops-100 to-ops-200 text-ops-800 dark:from-ops-900 dark:to-ops-800 dark:text-ops-200 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm border border-ops-200 dark:border-ops-700;
+}
+
+/* Special effects and animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced glass effect for hero sections */
+.glass-card {
+  @apply bg-white/10 dark:bg-gray-900/10 backdrop-blur-md border border-white/20 dark:border-gray-700/20 rounded-3xl shadow-2xl;
+}
+
+/* Improved section backgrounds with subtle patterns */
+.section-pattern {
+  background-image: 
+    radial-gradient(circle at 25px 25px, rgba(59, 130, 246, 0.02) 2px, transparent 2px),
+    radial-gradient(circle at 75px 75px, rgba(20, 184, 166, 0.02) 2px, transparent 2px);
+  background-size: 100px 100px, 100px 100px;
+  background-position: 0 0, 50px 50px;
+}
+
+/* Custom prose styles for better markdown rendering */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-semibold text-gray-900 dark:text-white;
+}
+
+.prose h2 {
+  @apply text-2xl mt-8 mb-4;
+}
+
+.prose h3 {
+  @apply text-xl mt-6 mb-3;
+}
+
+.prose p {
+  @apply leading-relaxed mb-4 text-gray-700 dark:text-gray-300;
+}
+
+.prose strong {
+  @apply font-bold text-gray-900 dark:text-white;
+}
+
+.prose ul {
+  @apply list-disc ml-6 mb-4;
+}
+
+.prose li {
+  @apply mb-2 text-gray-700 dark:text-gray-300;
+}
+
+.prose img {
+  @apply rounded-lg shadow-md my-6;
+}
+
+.prose a {
+  @apply text-blue-600 dark:text-blue-400 no-underline hover:underline;
+}
+
