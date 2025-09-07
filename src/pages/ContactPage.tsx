@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Mail, Linkedin, MapPin, Send, CheckCircle } from 'lucide-react';
+import React /* , { useState } */ from 'react';
+import { Mail, Linkedin, MapPin /*, Send, CheckCircle */ } from 'lucide-react';
 
 export const ContactPage: React.FC = () => {
+  /* 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +33,7 @@ export const ContactPage: React.FC = () => {
       [e.target.name]: e.target.value
     }));
   };
+  */
 
   return (
     <div className="min-h-screen py-20 px-4">
@@ -113,7 +115,8 @@ export const ContactPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Contact Form - Commented out for later implementation */}
+          {/* 
           <div>
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-200 dark:border-gray-700">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
@@ -130,112 +133,49 @@ export const ContactPage: React.FC = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="Your name"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Subject *
-                  </label>
-                  <select
-                    id="subject"
-                    name="subject"
-                    required
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="">Select a subject</option>
-                    <option value="job-opportunity">Job Opportunity</option>
-                    <option value="freelance-project">Freelance Project</option>
-                    <option value="collaboration">Collaboration</option>
-                    <option value="speaking">Speaking Opportunity</option>
-                    <option value="mentoring">Mentoring</option>
-                    <option value="general">General Inquiry</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={5}
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white resize-vertical"
-                    placeholder="Tell me about your project or opportunity..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={20} className="mr-2" />
-                      Send Message
-                    </>
-                  )}
-                </button>
+                ... form fields ...
               </form>
+            </div>
+          </div>
+          */}
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  You can also reach me directly at{' '}
-                  <a 
-                    href="mailto:cshetter4@protonmail.com" 
-                    className="text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    cshetter4@protonmail.com
-                  </a>
+          {/* Mailto Link */}
+          <div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-200 dark:border-gray-700 text-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                Send me a message
+              </h2>
+              
+              <div className="space-y-6">
+                <Mail className="w-16 h-16 text-blue-600 dark:text-blue-400 mx-auto" />
+                
+                <p className="text-gray-600 dark:text-gray-400 text-lg">
+                  Ready to start a conversation? Send me an email and I'll get back to you within 24-48 hours.
                 </p>
+                
+                <a
+                  href="mailto:cshetter4@protonmail.com?subject=Let's Connect - Portfolio Contact"
+                  className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-medium transition-colors duration-200 text-lg"
+                >
+                  <Mail size={24} className="mr-3" />
+                  Send Email
+                </a>
+                
+                <div className="mt-6">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Or copy my email address:{' '}
+                    <span className="text-blue-600 dark:text-blue-400 font-mono">
+                      cshetter4@protonmail.com
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Response Time */}
-        <div className="text-center mt-16 bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
+        {/* <div className="text-center mt-16 bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Response Time
           </h3>
@@ -243,7 +183,7 @@ export const ContactPage: React.FC = () => {
             I typically respond to messages within 24-48 hours. For urgent matters, 
             feel free to reach out via LinkedIn for a quicker response.
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { useFeaturedProjects } from '../hooks/useProjects';
 import { useHeroData } from '../hooks/useAboutData';
 import { ProjectCard } from '../components/ProjectCard';
 import { LoadingSkeleton } from '../components/LoadingSpinner';
-import { isUXResearchProject, getAboutImageUrl } from '../types';
+import { isUXResearchProject } from '../types';
 
 export const HomePage: React.FC = () => {
   const { projects: featuredProjects, loading } = useFeaturedProjects();
@@ -21,7 +21,7 @@ export const HomePage: React.FC = () => {
           {/* Profile Photo */}
           <div className="mb-8">
             <img 
-              src={heroData ? getAboutImageUrl(heroData) || "/profile-photo.jpg" : "/profile-photo.jpg"}
+              src="/portfolio/images/clark-hero.png"
               alt="Clark - UX Researcher"
               className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto object-cover shadow-lg"
             />
@@ -257,14 +257,14 @@ export const HomePage: React.FC = () => {
               <Link to="/contact" className="btn-primary text-lg px-8 py-4">
                 Get In Touch
               </Link>
-              <a
+              {/* <a
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary text-lg px-8 py-4"
               >
                 Download Resume
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

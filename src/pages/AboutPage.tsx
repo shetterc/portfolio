@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Download, BookOpen, Target, Zap } from 'lucide-react';
+import { Mail, BookOpen, Target, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useAboutPageData } from '../hooks/useAboutData';
-import { getAboutImageUrl } from '../types';
 
 export const AboutPage: React.FC = () => {
   const { aboutData, loading } = useAboutPageData();
@@ -52,9 +51,9 @@ export const AboutPage: React.FC = () => {
           <div className="mb-8">
             {aboutData ? (
               <img 
-                src={getAboutImageUrl(aboutData) || "/profile-photo.jpg"}
+                src="/portfolio/images/clark-about.jpg"
                 alt="Clark - UX Researcher"
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto object-cover shadow-lg"
+                className="w-40 h-48 md:w-48 md:h-60 rounded-2xl mx-auto object-cover shadow-lg"
               />
             ) : (
               <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full mx-auto mb-8 flex items-center justify-center text-white text-4xl font-bold">
@@ -266,7 +265,7 @@ export const AboutPage: React.FC = () => {
               <Mail size={20} className="mr-2" />
               Get In Touch
             </Link>
-            <a
+            {/* <a
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
@@ -274,7 +273,7 @@ export const AboutPage: React.FC = () => {
             >
               <Download size={20} className="mr-2" />
               Download Resume
-            </a>
+            </a> */}
           </div>
         </section>
       </div>
